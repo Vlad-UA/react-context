@@ -1,44 +1,102 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Context
 
-## Available Scripts
+## What for?
+Context is designed to share data that can be considered “global” for a tree of React components.
+1. locale preference (or preferred language) 
+2. UI theme
+3. current authenticated user 
+4. theme
 
-In the project directory, you can run:
+## What is Context doing?
+Context provides a way to pass data through the component tree without having to pass props down manually at every level.
 
-### `npm start`
+## Tips
+1. Use separate file for creation Context -- React.createContext({})<br>
+See problem #1
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Re-render
+https://reactjs.org/docs/context.html#contextprovider<br>
+All consumers that are descendants of a Provider will re-render whenever the Provider’s value prop changes. The propagation from Provider to its descendant consumers is not subject to the shouldComponentUpdate method, so the consumer is updated even when an ancestor component bails out of the update.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Changes are determined by comparing the new and old values using the same algorithm as `Object.is`.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## How to get context?
+1. [Context.Consumer](https://reactjs.org/docs/context.html#contextconsumer)
 
-### `npm run build`
+```javascript
+<MyContext.Consumer>
+  {value => /* render something based on the context value */}
+</MyContext.Consumer>
+```
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. [Class.contextType] (https://reactjs.org/docs/context.html#classcontexttype)
+```javascript
+class MyClass extends React.Component {
+  static contextType = MyContext;
+  render() {
+    let value = this.context;
+    /* render something based on the value */
+  }
+}
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Links
+1. React - Context https://reactjs.org/docs/context.html
+2. Video https://youtu.be/vc1shGHGBj0?t=159
+3. React - Context LEGACY https://reactjs.org/docs/legacy-context.html
 
-### `npm run eject`
+## Problems
+1. [16.6 Context API not working in class component](https://github.com/facebook/react/issues/13969)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Consuming Multiple Contexts
+```javascript
+// Theme context, default to light theme
+const ThemeContext = React.createContext('light');
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+// Signed-in user context
+const UserContext = React.createContext({
+  name: 'Guest',
+});
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+class App extends React.Component {
+  render() {
+    const {signedInUser, theme} = this.props;
 
-## Learn More
+    // App component that provides initial context values
+    return (
+      <ThemeContext.Provider value={theme}>
+        <UserContext.Provider value={signedInUser}>
+          <Layout />
+        </UserContext.Provider>
+      </ThemeContext.Provider>
+    );
+  }
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+function Layout() {
+  return (
+    <div>
+      <Sidebar />
+      <Content />
+    </div>
+  );
+}
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+// A component may consume multiple contexts
+function Content() {
+  return (
+    <ThemeContext.Consumer>
+      {theme => (
+        <UserContext.Consumer>
+          {user => (
+            <ProfilePage user={user} theme={theme} />
+          )}
+        </UserContext.Consumer>
+      )}
+    </ThemeContext.Consumer>
+  );
+}
+```

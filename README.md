@@ -26,7 +26,7 @@ Changes are determined by comparing the new and old values using the same algori
 
 ```javascript
 <MyContext.Consumer>
-  {value => /* render something based on the context value */}
+  {value => {/* render something based on the context value */}}
 </MyContext.Consumer>
 ```
 
@@ -53,14 +53,20 @@ class MyClass extends React.Component {
 
 ## Consuming Multiple Contexts
 ```javascript
+// File context/them-context.js
+//
 // Theme context, default to light theme
 const ThemeContext = React.createContext('light');
 
+// File context/user-context.js
+//
 // Signed-in user context
 const UserContext = React.createContext({
   name: 'Guest',
 });
 
+// File index App.js
+//
 class App extends React.Component {
   render() {
     const {signedInUser, theme} = this.props;
@@ -76,6 +82,8 @@ class App extends React.Component {
   }
 }
 
+// File layout.js
+//
 function Layout() {
   return (
     <div>
@@ -85,6 +93,8 @@ function Layout() {
   );
 }
 
+// File content.js
+//
 // A component may consume multiple contexts
 function Content() {
   return (

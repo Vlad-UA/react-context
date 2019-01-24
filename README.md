@@ -7,6 +7,8 @@ Context is designed to share data that can be considered “global” for a tree
 3. current authenticated user 
 4. theme
 
+**Often instead of Context we can use Redux or graphql.**
+
 ## What is Context doing?
 Context provides a way to pass data through the component tree without having to pass props down manually at every level.
 

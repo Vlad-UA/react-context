@@ -46,7 +46,9 @@ class MyClass extends React.Component {
 
 ## Links
 1. React - Context https://reactjs.org/docs/context.html
-2. Video https://youtu.be/vc1shGHGBj0?t=159
+2. Video:
+    (RU) https://youtu.be/vc1shGHGBj0?t=159
+    (EN) https://school.reactpatterns.com/courses/the-context-api/lectures/5535725
 3. React - Context LEGACY https://reactjs.org/docs/legacy-context.html
 
 ## Problems
